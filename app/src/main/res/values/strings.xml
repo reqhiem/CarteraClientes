@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CarteraClientes</string>
+    <string name="title_activity_act_main">Cartera clientes</string>
+    <!-- Strings used for fragments for navigation -->
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="title_activity_act_nuevo_cliente">ActNuevoCliente</string>
+</resources>
