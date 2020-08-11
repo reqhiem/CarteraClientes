@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import com.example.perca.carteraclientes.BaseDatos.DatosOpenHelper;
+import com.example.perca.carteraclientes.BaseDatos.FeedReaderClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class ActMain extends AppCompatActivity {
 
     private ListView lstDatos;
-    private ArrayAdapter<String> adaptador;
+    private ArrayAdapter<String> adaptator;
     private ArrayList<String> clientes;
 
     private SQLiteDatabase conexion;
@@ -56,23 +57,33 @@ public class ActMain extends AppCompatActivity {
         try {
             datosOpenHelper = new DatosOpenHelper(this);
             conexion = datosOpenHelper.getWritableDatabase();
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM CLIENTE");
-            String sNombre;
-            String sTelefono;
 
-            Cursor resultado = conexion.rawQuery(sql.toString(), null);
+            String[] projection = {
+                    FeedReaderClient.FeedEntry.COLUMN_NAME_TITLE,
+                    FeedReaderClient.FeedEntry.COLUMN_MOBILE_TITLE
+            };
 
-            if(resultado.getCount() > 0){
+            Cursor resultado = conexion.query(
+                    FeedReaderClient.FeedEntry.TABLE_NAME,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+
+            if (resultado.getCount() > 0) {
                 resultado.moveToFirst();
                 do {
-                    sNombre = resultado.getString(resultado.getColumnIndex("NOMBRE"));
-                    sTelefono = resultado.getString(resultado.getColumnIndex("TELEFONO"));
-                    clientes.add(sNombre + ": "+ sTelefono);
+                    String cliente = resultado.getString(resultado.getColumnIndex(FeedReaderClient.FeedEntry.COLUMN_NAME_TITLE)) +
+                            ": " + resultado.getString(resultado.getColumnIndex(FeedReaderClient.FeedEntry.COLUMN_MOBILE_TITLE));
+                    clientes.add(cliente);
                 } while (resultado.moveToNext());
+                resultado.close();
             }
-            adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clientes);
-            lstDatos.setAdapter(adaptador);
+            adaptator = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, clientes);
+            lstDatos.setAdapter(adaptator);
         }catch (Exception ex){
             AlertDialog.Builder dlg = new AlertDialog.Builder(this);
             dlg.setTitle("Aviso");

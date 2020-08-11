@@ -1,10 +1,12 @@
 package com.example.perca.carteraclientes;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
 import com.example.perca.carteraclientes.BaseDatos.DatosOpenHelper;
+import com.example.perca.carteraclientes.BaseDatos.FeedReaderClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -17,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ActNuevoCliente extends AppCompatActivity {
 
@@ -59,11 +62,13 @@ public class ActNuevoCliente extends AppCompatActivity {
                         datosOpenHelper = new DatosOpenHelper(this);
                         conexion = datosOpenHelper.getWritableDatabase();
 
-                        String sql = edtNombre.getText().toString().trim() + "', '" +
-                                edtDireccion.getText().toString().trim() + "', '" +
-                                edtEmail.getText().toString().trim() + "', '" +
-                                edtTelefono.getText().toString().trim() + "', '";
-                        conexion.execSQL(sql);
+                        ContentValues values = new ContentValues();
+                        values.put(FeedReaderClient.FeedEntry.COLUMN_NAME_TITLE, edtNombre.getText().toString().trim());
+                        values.put(FeedReaderClient.FeedEntry.COLUMN_ADDRESS_TITLE, edtDireccion.getText().toString().trim());
+                        values.put(FeedReaderClient.FeedEntry.COLUMN_EMAIL_TITLE, edtEmail.getText().toString().trim());
+                        values.put(FeedReaderClient.FeedEntry.COLUMN_MOBILE_TITLE, edtTelefono.getText().toString().trim());
+
+                        conexion.insert(FeedReaderClient.FeedEntry.TABLE_NAME, null, values);
                         conexion.close();
 
                         finish();
